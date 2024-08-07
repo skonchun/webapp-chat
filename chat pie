@@ -1,0 +1,99 @@
+1. Code ในส่วนของ รหัส.gs
+
+function getChartData() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Data");
+  const dataRanges = [
+    {range: 'Data!A2:B12', key:'Pormodtanoy1'},
+  ]
+
+  let data = [];
+
+  dataRanges.forEach(function(rangeObj){
+    let rangeData = sheet.getRange(rangeObj.range).getValues();
+    data.push({key:rangeObj.key, values:rangeData});
+  });
+  return data;
+}
+
+
+
+2. Code ในส่วนของ Html 
+
+ <div class="container">
+    <div class="row">
+      <div class="mt-4">
+        <h1 class="text-center">แสดงกราฟรายงานการใช้ยานพาหนะประจำปี พ.ศ. 2567</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 mb-4">
+        <div id="chart1" style="width: 100%; height: 400px;"></div>
+      </div>
+    </div>
+  </div>
+
+
+3. Code ในส่วน javascript
+
+
+  <script>
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+          google.script.run.withSuccessHandler(displayChart).getChartData();
+        }
+
+        function displayChart(data) {
+          var chart1Data = google.visualization.arrayToDataTable(getDataByKey(data,'Pormodtanoy1'));
+          var chart1Options = {
+            title: 'สถิติบุคลากรหน่วยงานที่ขอใช้ยานพาหนะ',
+          };
+         
+          var chart1 = new google.visualization.PieChart(document.getElementById('chart1'));
+          chart1.draw(chart1Data, chart1Options);
+        }
+
+        function getDataByKey(data, key) {
+          for (var i = 0; i < data.length; i++) {
+            if (data[i].key===key) {
+              return data[i].values; 
+            }
+          } 
+          return []; 
+        }
+  </script>
+
+
+
+4. ประดับให้สวย     
+css
+
+    .reset {
+      all: revert;
+      border-radius: 5px;
+      /* color: teal; */
+      /* border: 1px solid teal; */
+    }
+
+    fieldset {
+      /* width: 70%; */
+    }
+	
+html
+
+<fieldset class="reset">
+      <legend class="reset">/////////</legend>
+</fieldset>
+
+
+
+ปรับfont ให้สวยด้วย Prompt
+
+<link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
+
+<style>
+    body {
+      font-family: 'Prompt';
+    }
+</style>
